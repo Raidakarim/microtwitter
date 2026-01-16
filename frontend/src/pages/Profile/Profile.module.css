@@ -1,0 +1,47 @@
+.container {
+  max-width: 700px;
+  margin: 24px auto;
+  padding: 16px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+  opacity: 0.85;
+}
+
+.sectionTitle {
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.feed {
+  display: grid;
+  gap: 12px;
+}
+
+.post {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.meta {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.error {
+  color: red;
+}
+
