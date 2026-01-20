@@ -7,7 +7,7 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  grid-template-columns: 1fr auto;
   align-items: center;
   margin-bottom: 16px;
 }
