@@ -9,7 +9,7 @@ A full-stack microblogging app (Twitter-like) with:
 
 ## Features
 - Signup / login
-- Create posts (1–280 chars)
+- Create posts
 - Follow / unfollow users
 - Feed shows posts from users you follow + your own posts
 - User profile with posts + followers/following
@@ -17,8 +17,13 @@ A full-stack microblogging app (Twitter-like) with:
 ---
 
 ## Repo structure
-backend/ # Express + Prisma API
-frontend/ # React SPA
+- backend/ 
+    - Express + Prisma API
+    - Prisma ORM
+    - Auth, posts, follows, feed logic
+- frontend/ 
+    - React SPA
+    - Routes, pages, API calls, CSS modules
 
 ---
 
@@ -34,18 +39,40 @@ frontend/ # React SPA
 ### Backend (`backend/.env`)
 Create `backend/.env`:
 
-```env
+```
 DATABASE_URL="YOUR_SUPABASE_POSTGRES_CONNECTION_STRING"
 JWT_SECRET="YOUR_LONG_RANDOM_SECRET"
-PORT=8080```
+PORT=8080
+```
 
 Do not commit .env.
 
 ### Frontend (frontend/.env)
 
 Create frontend/.env:
-```env
-VITE_API_URL=http://localhost:8080```
+```
+VITE_API_URL=http://localhost:8080
+```
+
+## Run locally
+
+### Backend
+```
+cd backend
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run dev
+```
+Backend runs at http://localhost:8080
+
+### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+Frontend runs at http://localhost:5173
 
 ### API overview (key endpoints)
 
