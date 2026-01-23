@@ -106,4 +106,4 @@ Frontend runs at http://localhost:5173
 
 - Frontend: https://microtwitter.netlify.app
 
-- Backend: https://backend-spring-star-1738.fly.dev
+- Backend: https://backend-spring-star-1738.fly.dev/health
