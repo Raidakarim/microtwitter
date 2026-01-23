@@ -6,8 +6,7 @@ const app = express();
 // Middleware
 const allowlist = [
   "http://localhost:5173",
-  // Add Netlify URL after deploy:
-  // "https://your-site-name.netlify.app",
+  "https://microtwitter.netlify.app",
 ];
 
 app.use(
