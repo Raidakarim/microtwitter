@@ -74,6 +74,9 @@ npm run dev
 ```
 Frontend runs at http://localhost:5173
 
+## UI Library
+The frontend uses **shadcn/ui**, which is built on top of Radix UI primitives, providing accessible and composable components while allowing full styling control.
+
 ### API overview (key endpoints)
 
 - POST /auth/signup
