@@ -1,8 +1,16 @@
 .container {
-  max-width: 700px;
-  margin: 24px auto;
-  padding: 16px;
+  min-height: 100vh;
+  display: grid;
+  place-items: start center;
+  padding-top: 80px;
+  padding-left: 16px;
+  padding-right: 16px;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
 }
 
 .header {
@@ -10,18 +18,33 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 16px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
 }
 
 .stats {
   display: flex;
   gap: 12px;
   opacity: 0.85;
+  margin-top: 8px;
+}
+
+.content {
+  display: grid;
+  gap: 14px;
+}
+
+.sectionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sectionTitle {
-  margin-top: 18px;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .feed {
@@ -29,19 +52,16 @@
   gap: 12px;
 }
 
-.post {
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 8px;
-}
-
 .meta {
   font-size: 14px;
   opacity: 0.8;
-  margin-bottom: 6px;
+}
+
+.empty {
+  opacity: 0.7;
+  padding: 8px 0;
 }
 
 .error {
   color: red;
 }
-

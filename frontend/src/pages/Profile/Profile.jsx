@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getUser, getUserPosts } from "../../api/users";
 import { getFollowers, getFollowing, follow, unfollow } from "../../api/follows";
 import styles from "./Profile.module.css";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 export default function Profile({ me }) {
-  const { id } = useParams(); // profile user id
+  const { id } = useParams();
   const isMe = useMemo(() => me?.id === id, [me, id]);
 
   const [user, setUser] = useState(null);
@@ -14,8 +17,8 @@ export default function Profile({ me }) {
   const [following, setFollowing] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [isFollowing, setIsFollowing] = useState(false);
+  const [toggling, setToggling] = useState(false);
 
   async function load() {
     setError("");
@@ -27,7 +30,7 @@ export default function Profile({ me }) {
         getUserPosts(id),
         getFollowers(id),
         getFollowing(id),
-        getFollowing(me.id), // who I follow
+        getFollowing(me.id),
       ]);
 
       setUser(u.user);
@@ -52,59 +55,91 @@ export default function Profile({ me }) {
   async function onToggleFollow() {
     setError("");
     try {
+      setToggling(true);
       if (isFollowing) {
         await unfollow(id);
         setIsFollowing(false);
-        // refresh follower list count quickly
-        const fol = await getFollowers(id);
-        setFollowers(fol.followers);
       } else {
         await follow(id);
         setIsFollowing(true);
-        const fol = await getFollowers(id);
-        setFollowers(fol.followers);
       }
+
+      // refresh followers count
+      const fol = await getFollowers(id);
+      setFollowers(fol.followers);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setToggling(false);
     }
   }
 
   if (loading) return <div className={styles.container}>Loading profile...</div>;
-  if (error) return <div className={styles.container}><div className={styles.error}>{error}</div></div>;
+  if (error)
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>{error}</div>
+      </div>
+    );
   if (!user) return <div className={styles.container}>User not found</div>;
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h2>@{user.username}</h2>
-          <div className={styles.stats}>
-            <span><b>{followers.length}</b> followers</span>
-            <span><b>{following.length}</b> following</span>
-            <span><b>{posts.length}</b> posts</span>
-          </div>
-        </div>
+      <Card className={styles.card}>
+        <CardHeader className={styles.header}>
+          <div>
+            <CardTitle className="text-3xl font-bold">@{user.username}</CardTitle>
 
-        {!isMe && (
-          <button onClick={onToggleFollow}>
-            {isFollowing ? "Unfollow" : "Follow"}
-          </button>
-        )}
-      </div>
-
-      <h3 className={styles.sectionTitle}>Posts</h3>
-      <div className={styles.feed}>
-        {posts.map((p) => (
-          <div key={p.id} className={styles.post}>
-            <div className={styles.meta}>
-              {new Date(p.createdAt).toLocaleString()}
+            <div className={styles.stats}>
+              <span>
+                <b>{followers.length}</b> followers
+              </span>
+              <span>
+                <b>{following.length}</b> following
+              </span>
+              <span>
+                <b>{posts.length}</b> posts
+              </span>
             </div>
-            <div>{p.content}</div>
           </div>
-        ))}
-        {posts.length === 0 && <div>No posts yet.</div>}
-      </div>
+
+          <div className={styles.headerActions}>
+            {!isMe && (
+              <Button
+                variant={isFollowing ? "outline" : "default"}
+                onClick={onToggleFollow}
+                disabled={toggling}
+              >
+                {toggling ? "..." : isFollowing ? "Unfollow" : "Follow"}
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+
+        <CardContent className={styles.content}>
+          <div className={styles.sectionRow}>
+            <h3 className={styles.sectionTitle}>Posts</h3>
+            <Link to="/explore" className="text-blue-600 hover:underline font-medium">
+              Back to Explore
+            </Link>
+          </div>
+
+          <div className={styles.feed}>
+            {posts.map((p) => (
+              <Card key={p.id}>
+                <CardContent className="space-y-2 p-4">
+                  <div className={styles.meta}>
+                    {new Date(p.createdAt).toLocaleString()}
+                  </div>
+                  <div>{p.content}</div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {posts.length === 0 && <div className={styles.empty}>No posts yet.</div>}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
-

@@ -1,25 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { listUsers } from "../../api/users";
 import { follow, unfollow, getFollowing } from "../../api/follows";
 import styles from "./Explore.module.css";
 import { Link } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Explore({ me }) {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [followingIds, setFollowingIds] = useState(new Set());
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const meId = useMemo(() => me?.id, [me]);
 
   async function load() {
     setError("");
     try {
-      const [u, f] = await Promise.all([listUsers(search), getFollowing(me.id)]);
+      setLoading(true);
+      const [u, f] = await Promise.all([listUsers(search), getFollowing(meId)]);
       setUsers(u.users);
-
-      // f.following is an array of {id, username}
       setFollowingIds(new Set(f.following.map((x) => x.id)));
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -49,31 +57,52 @@ export default function Explore({ me }) {
 
   return (
     <div className={styles.container}>
-      <h2>Explore</h2>
+      <Card className={styles.card}>
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold">Explore</CardTitle>
+        </CardHeader>
 
-      <div className={styles.searchRow}>
-        <input
-          value={search}
-          placeholder="Search users..."
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button onClick={load}>Search</button>
-      </div>
-
-      {error && <div className={styles.error}>{error}</div>}
-
-      <div className={styles.list}>
-        {users.map((u) => (
-          <div key={u.id} className={styles.card}>
-            <div>
-              <Link to={`/users/${u.id}`}>@{u.username}</Link>
-            </div>
-            <button onClick={() => onToggle(u.id)}>
-              {followingIds.has(u.id) ? "Unfollow" : "Follow"}
-            </button>
+        <CardContent className={styles.content}>
+          <div className={styles.searchRow}>
+            <Input
+              value={search}
+              placeholder="Search users..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={load} disabled={loading}>
+              {loading ? "Searching..." : "Search"}
+            </Button>
           </div>
-        ))}
-      </div>
+
+          {error && <div className={styles.error}>{error}</div>}
+
+          <div className={styles.list}>
+            {users.map((u) => (
+              <Card key={u.id} className={styles.userRow}>
+                <CardContent className={styles.userRowContent}>
+                  <Link
+                    to={`/users/${u.id}`}
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    @{u.username}
+                  </Link>
+
+                  <Button
+                    variant={followingIds.has(u.id) ? "outline" : "default"}
+                    onClick={() => onToggle(u.id)}
+                  >
+                    {followingIds.has(u.id) ? "Unfollow" : "Follow"}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+
+            {users.length === 0 && !loading && (
+              <div className={styles.empty}>No users found.</div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

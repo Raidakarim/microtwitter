@@ -3,6 +3,9 @@ import { createPost } from "../../api/posts";
 import { getFeed } from "../../api/feed";
 import styles from "./Feed.module.css";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Feed({ user, logout }) {
   const [content, setContent] = useState("");
@@ -48,19 +51,21 @@ export default function Feed({ user, logout }) {
         </div>
 
         <div className={styles.actions}>
-          <Link to="/explore">Explore</Link>  
-          <button onClick={logout}>Logout</button>
+          <Link to="/explore" className="text-blue-600 hover:underline font-medium">Explore</Link>  
+          <Button variant="outline" onClick={logout}>
+  	    Logout
+	  </Button>
         </div>
       </header>
 
       <form onSubmit={onCreate} className={styles.composer}>
-        <textarea
+        <Textarea
           placeholder="What's happening?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows={3}
+          className="resize-none"
         />
-        <button type="submit">Post</button>
+        <Button type="submit">Post</Button>
       </form>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -70,12 +75,15 @@ export default function Feed({ user, logout }) {
       ) : (
         <div className={styles.feed}>
           {posts.map((p) => (
-            <div key={p.id} className={styles.post}>
+            <Card key={p.id}>
+              <CardContent className="space-y-2 p-4">
               <div className={styles.meta}>
-                <b>@{p.author.username}</b> · {new Date(p.createdAt).toLocaleString()}
-              </div>
-              <div>{p.content}</div>
-            </div>
+                <b>@{p.author.username}</b> ·{" "}
+		 {new Date(p.createdAt).toLocaleString()}
+		</div>
+                <div>{p.content}</div>
+	       </CardContent>
+             </Card>
           ))}
         </div>
       )}

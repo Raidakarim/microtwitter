@@ -1,32 +1,53 @@
 .container {
-  max-width: 700px;
-  margin: 24px auto;
-  padding: 16px;
+  min-height: 100vh;
+  display: grid;
+  place-items: start center;
+  padding-top: 80px;
+  padding-left: 16px;
+  padding-right: 16px;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
+.card {
+  width: 100%;
+  max-width: 720px;
+}
+
+.content {
+  display: grid;
+  gap: 14px;
+}
+
 .searchRow {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
 }
 
 .list {
   display: grid;
   gap: 10px;
+  margin-top: 6px;
 }
 
-.card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
+.userRow {
+  width: 100%;
+}
+
+.userRowContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  padding: 12px;
 }
 
 .error {
   color: red;
-  margin-bottom: 10px;
 }
 
+.empty {
+  opacity: 0.7;
+  padding: 8px 0;
+}
