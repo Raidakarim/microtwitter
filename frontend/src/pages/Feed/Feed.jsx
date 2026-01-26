@@ -52,9 +52,9 @@ export default function Feed({ user, logout }) {
 
         <div className={styles.actions}>
           <Link to="/explore" className="text-blue-600 hover:underline font-medium">Explore</Link>  
-          <Button variant="outline" onClick={logout}>
-  	    Logout
-	  </Button>
+            <Button variant="outline" onClick={logout}>
+              Logout
+            </Button>
         </div>
       </header>
 
@@ -77,10 +77,17 @@ export default function Feed({ user, logout }) {
           {posts.map((p) => (
             <Card key={p.id}>
               <CardContent className="space-y-2 p-4">
-              <div className={styles.meta}>
-                <b>@{p.author.username}</b> ·{" "}
-		 {new Date(p.createdAt).toLocaleString()}
-		</div>
+                <div className={styles.meta}>
+                  <Link
+                    to={`/users/${p.author.id}`}
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    @{p.author.username}
+                  </Link>
+                  {" · "}
+                  {new Date(p.createdAt).toLocaleString()}
+                </div>
+
                 <div>{p.content}</div>
 	       </CardContent>
              </Card>

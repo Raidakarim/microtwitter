@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function Explore({ me }) {
+export default function Explore({ me, logout }) {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
   const [followingIds, setFollowingIds] = useState(new Set());
@@ -58,8 +58,23 @@ export default function Explore({ me }) {
   return (
     <div className={styles.container}>
       <Card className={styles.card}>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">Explore</CardTitle>
+        <CardHeader className={styles.header}>
+          <div>
+            <CardTitle className="text-3xl font-bold">Explore</CardTitle>
+          </div>
+
+          <div className={styles.headerActions}>
+            <Link
+              to="/feed"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Feed
+            </Link>
+
+            <Button variant="outline" onClick={logout}>
+              Logout
+            </Button>
+          </div>
         </CardHeader>
 
         <CardContent className={styles.content}>

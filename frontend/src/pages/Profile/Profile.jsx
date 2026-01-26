@@ -7,7 +7,7 @@ import styles from "./Profile.module.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function Profile({ me }) {
+export default function Profile({ me, logout }) {
   const { id } = useParams();
   const isMe = useMemo(() => me?.id === id, [me, id]);
 
@@ -118,11 +118,25 @@ export default function Profile({ me }) {
 
         <CardContent className={styles.content}>
           <div className={styles.sectionRow}>
-            <h3 className={styles.sectionTitle}>Posts</h3>
-            <Link to="/explore" className="text-blue-600 hover:underline font-medium">
-              Back to Explore
-            </Link>
+            <h2 className={`${styles.sectionTitle} font-bold`}>Posts</h2>
+
+            <div className={styles.sectionActions}>
+              <Link
+                to="/explore"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Explore
+              </Link>
+
+              <Button
+                variant="outline"
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            </div>
           </div>
+
 
           <div className={styles.feed}>
             {posts.map((p) => (

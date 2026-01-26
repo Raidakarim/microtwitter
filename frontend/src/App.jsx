@@ -27,7 +27,7 @@ export default function App() {
           path="/users/:id"
           element={
             <ProtectedRoute user={user} loading={loading}>
-              <Profile me={user} />
+              <Profile me={user} logout={logout}/>
             </ProtectedRoute>
           }
         />
@@ -45,7 +45,7 @@ export default function App() {
           path="/explore"
           element={
             <ProtectedRoute user={user} loading={loading}>
-              <Explore me={user} />
+              <Explore me={user} logout={logout}/>
             </ProtectedRoute>
           }
         />
