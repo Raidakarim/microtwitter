@@ -5,7 +5,14 @@ export function getToken() {
 }
 
 export async function apiFetch(path, { method = "GET", body, auth = false } = {}) {
-  const headers = { "Content-Type": "application/json" };
+  const headers = {};
+
+  const isFormData = body instanceof FormData;
+
+  // Only set JSON content-type when NOT uploading FormData
+  if (!isFormData && body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (auth) {
     const token = getToken();
@@ -15,7 +22,12 @@ export async function apiFetch(path, { method = "GET", body, auth = false } = {}
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body:
+      body === undefined
+        ? undefined
+        : isFormData
+          ? body
+          : JSON.stringify(body),
   });
 
   const data = await res.json().catch(() => ({}));
@@ -26,4 +38,3 @@ export async function apiFetch(path, { method = "GET", body, auth = false } = {}
 
   return data;
 }
-

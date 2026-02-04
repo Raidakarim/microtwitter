@@ -1,8 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getUser, getUserPosts } from "../../api/users";
-import { getFollowers, getFollowing, follow, unfollow } from "../../api/follows";
+import {
+  getFollowers,
+  getFollowing,
+  follow,
+  unfollow,
+} from "../../api/follows";
 import styles from "./Profile.module.css";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { uploadAvatar } from "../../api/uploads";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +26,42 @@ export default function Profile({ me, logout }) {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  function initials(name) {
+    return (name || "?").slice(0, 2).toUpperCase();
+  }
+
+  function openFilePicker() {
+    fileInputRef.current?.click();
+  }
+
+  async function onPickAvatar(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setError("");
+      setUploading(true);
+
+      const result = await uploadAvatar(file);
+      console.log("uploadAvatar result:", result);
+
+      setUser((prev) =>
+        prev
+          ? { ...prev, avatarUrl: result.avatarUrl, avatarPath: result.avatarPath }
+          : prev
+      );
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+}
 
   async function load() {
     setError("");
@@ -30,7 +73,7 @@ export default function Profile({ me, logout }) {
         getUserPosts(id),
         getFollowers(id),
         getFollowing(id),
-        getFollowing(me.id),
+        getFollowing(me?.id),
       ]);
 
       setUser(u.user);
@@ -74,7 +117,8 @@ export default function Profile({ me, logout }) {
     }
   }
 
-  if (loading) return <div className={styles.container}>Loading profile...</div>;
+  if (loading)
+    return <div className={styles.container}>Loading profile...</div>;
   if (error)
     return (
       <div className={styles.container}>
@@ -87,19 +131,47 @@ export default function Profile({ me, logout }) {
     <div className={styles.container}>
       <Card className={styles.card}>
         <CardHeader className={styles.header}>
-          <div>
-            <CardTitle className="text-3xl font-bold">@{user.username}</CardTitle>
+          <div className={styles.headerLeft}>
+            <Avatar className={styles.avatar}>
+              <AvatarImage src={user.avatarUrl || ""} alt={`@${user.username}`} />
+              <AvatarFallback>{initials(user.username)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-3xl font-bold">
+                @{user.username}
+              </CardTitle>
+              <div className={styles.stats}>
+                <span>
+                  <b>{followers.length}</b> followers
+                </span>
+                <span>
+                  <b>{following.length}</b> following
+                </span>
+                <span>
+                  <b>{posts.length}</b> posts
+                </span>
+              </div>
+              {isMe && (
+                <div className={styles.avatarActions}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={onPickAvatar}
+                    disabled={uploading}
+                    style={{ display: "none" }}
+                  />
 
-            <div className={styles.stats}>
-              <span>
-                <b>{followers.length}</b> followers
-              </span>
-              <span>
-                <b>{following.length}</b> following
-              </span>
-              <span>
-                <b>{posts.length}</b> posts
-              </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={uploading}
+                    onClick={openFilePicker}
+                  >
+                    {uploading ? "Uploading..." : "Upload profile picture"}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -128,15 +200,11 @@ export default function Profile({ me, logout }) {
                 Explore
               </Link>
 
-              <Button
-                variant="outline"
-                onClick={logout}
-              >
+              <Button variant="outline" onClick={logout}>
                 Logout
               </Button>
             </div>
           </div>
-
 
           <div className={styles.feed}>
             {posts.map((p) => (
@@ -150,7 +218,9 @@ export default function Profile({ me, logout }) {
               </Card>
             ))}
 
-            {posts.length === 0 && <div className={styles.empty}>No posts yet.</div>}
+            {posts.length === 0 && (
+              <div className={styles.empty}>No posts yet.</div>
+            )}
           </div>
         </CardContent>
       </Card>

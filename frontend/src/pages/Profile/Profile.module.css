@@ -71,3 +71,22 @@
   align-items: center;
   gap: 12px;
 }
+
+.headerLeft {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+}
+
+.avatarActions {
+  margin-top: 10px;
+}
+
+.avatarClickable {
+  cursor: pointer;
+}

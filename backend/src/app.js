@@ -32,6 +32,7 @@ app.use("/users", require("./routes/users.routes"));
 app.use("/posts", require("./routes/posts.routes"));
 app.use("/follows", require("./routes/follows.routes"));
 app.use("/feed", require("./routes/feed.routes"));
+app.use("/uploads", require("./routes/uploads.routes"));
 
 // Error middleware (placeholder)
 app.use(require("./middleware/error.middleware"));
