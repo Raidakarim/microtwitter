@@ -27,6 +27,7 @@ export default function Profile({ me, logout }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [toggling, setToggling] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [avatarBust, setAvatarBust] = useState(0);
   const fileInputRef = useRef(null);
 
   function initials(name) {
@@ -53,7 +54,7 @@ export default function Profile({ me, logout }) {
           ? { ...prev, avatarUrl: result.avatarUrl, avatarPath: result.avatarPath }
           : prev
       );
-
+      setAvatarBust(Date.now());
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -133,7 +134,10 @@ export default function Profile({ me, logout }) {
         <CardHeader className={styles.header}>
           <div className={styles.headerLeft}>
             <Avatar className={styles.avatar}>
-              <AvatarImage src={user.avatarUrl || ""} alt={`@${user.username}`} />
+              <AvatarImage
+                src={user.avatarUrl ? `${user.avatarUrl}?v=${avatarBust}` : ""}
+                alt={`@${user.username}`}
+            />
               <AvatarFallback>{initials(user.username)}</AvatarFallback>
             </Avatar>
             <div>
