@@ -1,9 +1,8 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth.middleware");
-const postsController = require("../controllers/posts.controller");
+const upload = require("../middleware/upload.middleware");
+const { createPost } = require("../controllers/posts.controller");
 
-router.post("/", auth, postsController.createPost);
+router.post("/", auth, upload.single("image"), createPost);
 
 module.exports = router;
-
-
